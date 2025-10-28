@@ -1,0 +1,97 @@
+.browse-page {
+    width: 100%;
+    min-height: 100vh;
+    >article {
+        width: 100%;
+        min-height: calc(100% - 80px);
+        >header {
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            >h1 {
+                font-size: 3rem;
+                margin-top: 0.75rem;
+                margin-bottom: 0.75rem;;
+                margin-left: 20px;
+                font-family: 'Dosis';
+                background: linear-gradient(90deg,rgba(2, 204, 197, 1) 0%, rgba(135, 135, 250, 1) 100%);
+                background-clip: text;
+                color: transparent !important;
+            }
+            >button {
+                margin-right: 40px;;
+            }
+        }
+        >section {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            >ul {
+                width: 80%;
+                margin: 0 auto;
+                list-style: none;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                flex-direction: row;
+                justify-content: space-between;
+                
+                >li{
+                    margin-bottom: 20px;
+                    padding: 13px;
+                    border-radius: 8px;
+                    transition: all 200ms ease-in-out;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                    &:nth-of-type(3n+1){
+                        &:hover {
+                            background: linear-gradient(90deg, rgba(2, 204, 197, 0.5) 0%, rgba(46, 181, 215, 0.5) 100%);
+                        }
+                        background: linear-gradient(90deg, rgba(2, 204, 197, 1) 0%, rgba(46, 181, 215, 1) 100%);
+                        transition: all 200ms ease-in-out;
+                    }
+                    &:nth-of-type(3n+2){
+                        &:hover {
+                            background: linear-gradient(90deg, rgba(46, 181, 215, 0.5) 0%, rgba(91, 158, 233, 0.5) 100%);
+                        }
+                        background: linear-gradient(90deg, rgba(46, 181, 215, 1) 0%, rgba(91, 158, 233, 1) 100%);
+                        transition: all 200ms ease-in-out;
+                    }
+                    &:nth-of-type(3n){
+                        &:hover {
+                            background: linear-gradient(90deg, rgba(91, 158, 233, 0.5) 0%, rgba(135, 135, 250, 0.5) 100%);
+                        }
+                        background: linear-gradient(90deg, rgba(91, 158, 233, 1) 0%, rgba(135, 135, 250, 1) 100%);
+                        transition: all 200ms ease-in-out;
+                    }
+                    box-sizing: border-box;
+                    width: 25%;
+                    min-width: 150px;
+                    >h3 {
+                        height: 30px;
+                        line-height: 30px;
+                        text-align: center;
+                        font-family: 'Dosis';
+                        font-size: 1.25rem;
+                        font-weight: bold;
+                    }
+                }
+            }
+            >aside {
+                display: none;
+                width: 20%;
+                background-color: red;
+                >h2 {
+                    text-align: center;
+                    font-size: 1.5rem;
+                }
+            }
+        }
+
+    }
+}

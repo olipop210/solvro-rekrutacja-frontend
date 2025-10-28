@@ -1,0 +1,30 @@
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-40%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.fancy-background {
+    width: 200vw;
+    height: 150vh;
+    rotate: -5deg;
+    position: fixed;
+    top: -25vh;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+    filter:brightness(0.5) contrast(0.85) ;
+    animation: scroll 90s ease-in-out infinite;
+    >img {
+        width: 10%;
+    }
+}
