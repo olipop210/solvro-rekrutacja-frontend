@@ -47,6 +47,14 @@ const Browse = () => {
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+    const [availableGlasses, setAvailableGlasses] = useState<string[]>([]);
+
+    const [selectedGlasses, setSelectedGlasses] = useState<string[]>([]);
+
+    const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
+
+    const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
+
     const setPage = (number: number) => {
         setPageNumber(number);
         loadCocktails();
@@ -68,6 +76,13 @@ const Browse = () => {
             )
         }
 
+        if (selectedGlasses.length > 0) {
+            selectedGlasses.forEach((glass, index) => {
+                categoriesQuery += `&glass=${encodeURIComponent(glass)}`;
+            }
+            )
+        }
+
         const data = await fetch(`https://cocktails.solvro.pl/api/v1/cocktails?page=${page}&perPage=${perPage}${categoriesQuery}`);
         const json = await data.json();
         console.log(json.data);
@@ -84,10 +99,30 @@ const Browse = () => {
     }
 
     const loadFilters = async () => {
+        loadCategories();
+        loadGlasses();
+        loadIngredients();
+    }
+
+    const loadCategories = async () => {
         const data = await fetch('https://cocktails.solvro.pl/api/v1/cocktails/categories')
         const json = await data.json();
         console.log(json.data);
         setAvailableCategories(json.data);
+    }
+
+    const loadGlasses = async () => {
+        const data = await fetch('https://cocktails.solvro.pl/api/v1/cocktails/glasses')
+        const json = await data.json();
+        console.log(json.data);
+        setAvailableGlasses(json.data);
+    }
+
+    const loadIngredients = async () => {
+        const data = await fetch('https://cocktails.solvro.pl/api/v1/ingredients/types')
+        const json = await data.json();
+        console.log(json.data);
+        setAvailableIngredients(json.data);
     }
 
     const categoryChanged = (category: string) => {
@@ -96,6 +131,24 @@ const Browse = () => {
             setSelectedCategories(selectedCategories.filter(c => c !== category));
         } else {
             setSelectedCategories([...selectedCategories, category]);
+        }
+    }
+
+    const glassChanged = (glass: string) => {
+        console.log(`Glass changed: ${glass}`);
+        if (selectedGlasses.includes(glass)) {
+            setSelectedGlasses(selectedGlasses.filter(g => g !== glass));
+        } else {
+            setSelectedGlasses([...selectedGlasses, glass]);
+        }
+    }
+
+    const ingredientChanged = (ingredient: string) => {
+        console.log(`Ingredient changed: ${ingredient}`);
+        if (selectedIngredients.includes(ingredient)) {
+            setSelectedIngredients(selectedIngredients.filter(i => i !== ingredient));
+        } else {
+            setSelectedIngredients([...selectedIngredients, ingredient]);
         }
     }
 
@@ -140,7 +193,7 @@ const Browse = () => {
                                 Tutaj możesz ustawić filtry wyszukiwania koktajli.
                             </SheetDescription>
                         </SheetHeader>
-                        <div className="grid flex-1 auto-rows-min gap-6 px-4">
+                        <div className="grid flex-1 auto-rows-min overflow-scroll gap-6 px-4">
                             <div className="grid gap-3">
                                 <Label htmlFor="sheet-demo-name">Liczba wyników na stronę</Label>
                                 <ButtonGroup >
@@ -158,7 +211,6 @@ const Browse = () => {
                                     type="single"
                                     collapsible
                                     className="w-full"
-                                    defaultValue="item-1"
                                 >
                                     <AccordionItem value="item-1">
                                         <AccordionTrigger>Typ koktajlu <span className={'text-neutral-500'}>{selectedCategories.length > 0 ? `wybrano ${selectedCategories.length}` : null} </span></AccordionTrigger>
@@ -167,6 +219,39 @@ const Browse = () => {
                                                 <div key={index} className='flex items-center'>
                                                     <Checkbox defaultChecked={selectedCategories.includes(category)} onCheckedChange={() => categoryChanged(category)} id={`category-${index}`} name="category" value={category} />
                                                     <Label htmlFor={`category-${index}`} className='ml-2'>{category}</Label>
+                                                </div>
+                                            ))}
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                </Accordion>
+                                <Accordion type="single"
+                                    collapsible
+                                    className="w-full"
+                                >
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>Typ szkła <span className={'text-neutral-500'}>{selectedGlasses.length > 0 ? `wybrano ${selectedGlasses.length}` : null} </span></AccordionTrigger>
+                                        <AccordionContent className="flex flex-col gap-4 text-balance">
+                                            {availableGlasses.map((glass, index) => (
+                                                <div key={index} className='flex items-center'>
+                                                    <Checkbox defaultChecked={selectedGlasses.includes(glass)} onCheckedChange={() => glassChanged(glass)} id={`glass-${index}`} name="glass" value={glass} />
+                                                    <Label htmlFor={`glass-${index}`} className='ml-2'>{glass}</Label>
+                                                </div>
+                                            ))}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                                <Accordion type="single"
+                                    collapsible
+                                    className="w-full"
+                                >
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>Posiadane składniki <span className={'text-neutral-500'}>{selectedIngredients.length > 0 ? `wybrano ${selectedIngredients.length}` : null} </span></AccordionTrigger>
+                                        <AccordionContent className="flex flex-col gap-4 text-balance">
+                                            {availableIngredients.map((ingredient, index) => (
+                                                <div key={index} className='flex items-center'>
+                                                    <Checkbox defaultChecked={selectedIngredients.includes(ingredient)} onCheckedChange={() => ingredientChanged(ingredient)} id={`ingredient-${index}`} name="ingredient" value={ingredient} />
+                                                    <Label htmlFor={`ingredient-${index}`} className='ml-2'>{ingredient}</Label>
                                                 </div>
                                             ))}
                                         </AccordionContent>
