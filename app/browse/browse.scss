@@ -92,6 +92,17 @@
                 }
             }
         }
-
+        >div>input {
+            width: 75%;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            margin-left: 20px;
+        }
     }
+}
+
+.filterSection {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }

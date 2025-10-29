@@ -45,6 +45,74 @@ export enum CocktailGlass {
   COUPE_GLASS = "Coupe Glass",
 }
 
+export enum IngredientType {
+  VODKA = "Vodka",
+  GIN = "Gin",
+  RUM = "Rum",
+  SPIRIT = "Spirit",
+  WHISKY = "Whisky",
+  SYRUP = "Syrup",
+  BEER = "Beer",
+  LIQUEUR = "Liqueur",
+  BITTER = "Bitter",
+  BRANDY = "Brandy",
+  CIDER = "Cider",
+  LIQUOR = "Liquor",
+  BEVERAGE = "Beverage",
+  GARNISH = "Garnish",
+  SAMBUCA = "Sambuca",
+  CANDY = "Candy",
+  FRUIT = "Fruit",
+  SOFT_DRINK = "Soft Drink",
+  WATER = "Water",
+  MINERAL = "Mineral",
+  WINE = "Wine",
+  SODA = "Soda",
+  CREAM = "Cream",
+  MILK = "Milk",
+  JUICE = "Juice",
+  COFFEE = "Coffee",
+  SHERRY = "Sherry",
+  SPICE = "Spice",
+  MIX = "Mix",
+  FORTIFIED_WINE = "Fortified Wine",
+  SAUCE = "Sauce",
+  TEQUILA = "Tequila",
+  SCHNAPPS = "Schnapps",
+  SUGAR = "Sugar",
+  STOUT = "Stout",
+  ALCOPOP = "Alcopop",
+  CORDIAL = "Cordial",
+  FLOWER = "Flower",
+  BITTERS = "Bitters",
+  APERITIF = "Aperitif",
+  COLA = "Cola",
+  RICE_WINE = "Rice wine",
+  SWEET = "Sweet",
+  TEA = "Tea",
+  PORT = "Port",
+  VINEGAR = "Vinegar",
+  CONFECTIONERY = "Confectionery",
+  VERMOUTH = "Vermouth",
+  MIXER = "Mixer",
+  FRUIT_JUICE = "Fruit Juice",
+  HERB = "Herb",
+  SEASONING = "Seasoning",
+}
+
+export interface Ingredient {
+  id: number;
+  name: string;
+  description: string | null;
+  alcohol: boolean | null;
+  type: IngredientType | null;
+  percentage: number | null;
+  imageUrl: string | null;
+  createdAt: string;
+  updatedAt: string;
+  measure?: string;
+}
+
 export interface Cocktail {
   id: number;
   name: string;
@@ -55,6 +123,7 @@ export interface Cocktail {
   imageUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  ingredients?: Ingredient[];
 }
 
 export type PaginationProps = {

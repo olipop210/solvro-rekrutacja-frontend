@@ -30,6 +30,9 @@ import { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group'
 import { toast } from 'sonner';
 import MyPagination from '@/components/ui/Pagination/MyPagination';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import CocktailInformation from './CocktailInformation';
+import { defaultCocktail } from '@/components/CocktailPlaceholder';
 
 const Browse = () => {
 
@@ -55,6 +58,22 @@ const Browse = () => {
 
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 
+    const [softDrinksOnly, setSoftDrinksOnly] = useState<boolean>(false);
+
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
+    const [sortOrder, setSortOrder] = useState<string>('');
+
+    const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+
+    const [selectedCocktail, setSelectedCocktail] = useState<Cocktail>(defaultCocktail);
+
+    const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false);
+
+    const onlyFavoritesChanged = () => {
+        setOnlyFavorites(!onlyFavorites);
+    }
+
     const setPage = (number: number) => {
         setPageNumber(number);
         loadCocktails();
@@ -67,7 +86,11 @@ const Browse = () => {
         loadFilters();
     }, []);
 
-    const loadCocktails = async () => {
+    useEffect(() => {
+        loadCocktails(true);
+    }, [sortOrder, page])
+
+    const loadCocktails = async (hideConfirmation = false) => {
         let categoriesQuery = '';
         if (selectedCategories.length > 0) {
             selectedCategories.forEach((category, index) => {
@@ -83,18 +106,40 @@ const Browse = () => {
             )
         }
 
-        const data = await fetch(`https://cocktails.solvro.pl/api/v1/cocktails?page=${page}&perPage=${perPage}${categoriesQuery}`);
+        if (softDrinksOnly) {
+            categoriesQuery += `&alcoholic=false`;
+        }
+
+        if (searchTerm.length > 0) {
+            categoriesQuery += `&name=${encodeURIComponent(`%${searchTerm.toLowerCase()}%`)}`;
+            setFirstLoad(true);
+        }
+
+        const data = await fetch(`https://cocktails.solvro.pl/api/v1/cocktails?page=${page}&perPage=${perPage}${categoriesQuery}&sort=${sortOrder}&ingredients=true`);
         const json = await data.json();
         console.log(json.data);
 
-        setCocktails(json.data);
-        setTotalPages(Math.ceil(json.meta.total / perPage));
+        if (onlyFavorites) {
+            const favorites = localStorage.getItem('favorites');
+            let favArray: number[] = [];
+            if (favorites) {
+                favArray = JSON.parse(favorites) as number[];
+            }
+            const filteredData = json.data.filter((cocktail: Cocktail) => favArray.includes(cocktail.id));
+            setCocktails(filteredData);
+            setTotalPages(Math.ceil(filteredData.length / perPage));
+        } else {
+            setCocktails(json.data);
+            setTotalPages(Math.ceil(json.meta.total / perPage));
+        }
 
         if (firstLoad) {
             setFirstLoad(false);
         }
         else {
-            toast.success('Zaktualizowano wyszukiwanie');
+            if (!hideConfirmation) {
+                toast.success('Zaktualizowano wyszukiwanie');
+            }
         }
     }
 
@@ -152,6 +197,26 @@ const Browse = () => {
         }
     }
 
+    const softDrinksChanged = () => {
+        setSoftDrinksOnly(!softDrinksOnly);
+    }
+
+    const searchUpdated = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newSearchTerm = e.target.value;
+        if (searchTerm != newSearchTerm) {
+            setSearchTerm(newSearchTerm);
+            loadCocktails(true);
+        }
+    }
+
+    const sortingUpdated = (newSortOrder: string) => {
+        if (sortOrder != newSortOrder) {
+            console.log("Sort order changed");
+            setSortOrder(newSortOrder);
+
+        }
+    }
+
     return (
         <main className="browse-page">
             <Appbar />
@@ -163,13 +228,30 @@ const Browse = () => {
                             <Button size={'lg'} variant={'outline'}>Filtry</Button>
                         </SheetTrigger>
                     </header>
+                    <div className="flex w-full max-w-sm items-center gap-2">
+                        <Input value={searchTerm} placeholder='Wyszukaj koktajl...' onChange={searchUpdated} />
+                        <Select onValueChange={(value) => sortingUpdated(value)} defaultValue={sortOrder}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Sortowanie" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="+name">Od A do Z</SelectItem>
+                                <SelectItem value="-name">Od Z do A</SelectItem>
+                                <SelectItem value="+updatedAt">Od najnowszych</SelectItem>
+                                <SelectItem value="-updatedAt">Od najstarszych</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                     {
                         totalPages > 1 ? <MyPagination setPage={setPage} page={page} totalPages={totalPages} /> : null
                     }
                     <section className='horizontal-container'>
                         <ul className='cocktails-grid'>
                             {cocktails.map(cocktail => (
-                                <li key={cocktail.id} className='cocktail-card'>
+                                <li key={cocktail.id} onClick={() => {
+                                    setDrawerOpen(true)
+                                    setSelectedCocktail(cocktail)
+                                }} className='cocktail-card'>
 
                                     <img src={cocktail.imageUrl!} alt={cocktail.name} />
                                     <h3>{cocktail.name}</h3>
@@ -257,16 +339,25 @@ const Browse = () => {
                                         </AccordionContent>
                                     </AccordionItem>
                                 </Accordion>
+                                <section className='filterSection'>
+                                    <Checkbox defaultChecked={softDrinksOnly} onCheckedChange={softDrinksChanged} id={`soft-drinks-only`} name="soft-drinks-only" value="soft-drinks-only" />
+                                    <Label className='ml-2'>Soft drinks only</Label>
+                                </section>
+                                <section className='filterSection'>
+                                    <Checkbox defaultChecked={onlyFavorites} onCheckedChange={onlyFavoritesChanged} id={`only-favorites`} name="only-favorites" value="only-favorites" />
+                                    <Label className='ml-2'>Only favorites</Label>
+                                </section>
                             </div>
                         </div>
                         <SheetFooter>
-                            <Button onClick={loadCocktails} >Filtruj</Button>
+                            <Button onClick={() => loadCocktails()} >Filtruj</Button>
                             <SheetClose asChild>
                                 <Button variant="outline">Zamknij</Button>
                             </SheetClose>
                         </SheetFooter>
                     </SheetContent>
                 </Sheet>
+                <CocktailInformation cocktail={selectedCocktail!} drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
             </article>
         </main>
     );

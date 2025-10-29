@@ -1,0 +1,61 @@
+'use client'
+
+import { Cocktail } from "@/lib/types"
+
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer"
+
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { Separator } from "@/components/ui/separator"
+
+
+const CocktailInformation = ({ cocktail, drawerOpen, setDrawerOpen }: { cocktail: Cocktail, drawerOpen: boolean, setDrawerOpen: (open: boolean) => void }) => {
+
+    return (
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <DrawerContent>
+                <div className="mx-auto w-full">
+                    <DrawerHeader>
+                        <DrawerTitle className={'text-3xl'}>{cocktail.name}</DrawerTitle>
+                    </DrawerHeader>
+                    <div className="p-4 pb-0 flex w-full flex-row justify-evenly items-center">
+                        <img src={cocktail.imageUrl!} alt={cocktail.name} className="mb-4 max-h-80 rounded-md" />
+                        <div className={'h-full flex flex-col justify-between ml-6 items-center'}>
+                            <header>
+                                <h2 className="mb-2 text-lg font-semibold text-center w-1/2">Ingredients:</h2>
+                            </header>
+                            <section>
+                                <ul className="list-disc list-inside mb-4">
+                                    {cocktail.ingredients?.map((ingredient, index) => (
+                                        <li key={index}>{ingredient.name}</li>
+                                    ))}
+                                </ul>
+                            </section>
+                            <Separator className="my-4" />
+                            <section>
+                                <Link className={'mr-4'} href={`/instructions/${cocktail.id}`}>
+                                    <Button>Recipe and more information</Button>
+                                </Link>
+                                <DrawerClose asChild>
+                                    <Button variant="outline">Close</Button>
+                                </DrawerClose>
+                            </section>
+                        </div>
+                    </div>
+                    <DrawerFooter>
+
+                    </DrawerFooter>
+                </div>
+            </DrawerContent>
+        </Drawer>
+    );
+}
+
+export default CocktailInformation;
