@@ -21,10 +21,10 @@ export default function Home() {
         <article className='content'>
           <section className='btn-box'>
             <Link href="/browse">
-              <Button size={'lg'} className={'scale-125 hover:cursor-pointer'} variant={'secondary'}>Przeglądaj koktajle</Button>
+              <Button size={'lg'} className={'scale-90 lg:scale-125 sm:scale-100 hover:cursor-pointer'} variant={'secondary'}>Browse Cocktails</Button>
             </Link>
             <a href="">
-              <Button size={'lg'} className={'scale-125 hover:cursor-pointer'} variant={'outline'}>Zwiedzaj repozytorium</Button>
+              <Button size={'lg'} className={' scale-90 lg:scale-125 sm:scale-100 lg:ml-20 hover:cursor-pointer'} variant={'outline'}>Explore Repository</Button>
             </a>
           </section>
         </article>

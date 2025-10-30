@@ -8,14 +8,14 @@ import Link from 'next/link';
 const Appbar = () => {
     return (
         <header className="appbar">
-            <h1>Solvro Cocktails</h1>
+            <h1 className='text-3xl sm:text-4xl md:text-4xl lg:text-5xl ml-5'>Solvro Cocktails</h1>
             <nav>
                 <ul>
-                    <li>
+                    <li className='ml-2 lg:ml-5 md:ml-4 sm:ml-4'>
                         <HoverCard>
                             <HoverCardTrigger>
                                 <Link href="/">
-                                    <RxHome size={35} style={{ cursor: 'pointer' }} />
+                                    <RxHome className='scale-75 lg:scale-100 md:scale-100 sm:scale-100' size={35} style={{ cursor: 'pointer' }} />
                                 </Link>
                             </HoverCardTrigger>
                             <HoverCardContent>
@@ -23,11 +23,11 @@ const Appbar = () => {
                             </HoverCardContent>
                         </HoverCard>
                     </li>
-                    <li>
+                    <li className='ml-2 lg:ml-5 md:ml-4 sm:ml-4'>
                         <HoverCard>
                             <HoverCardTrigger>
                                 <Link href="/browse">
-                                    <BiDrink size={35} style={{ cursor: 'pointer' }} />
+                                    <BiDrink className='scale-75 lg:scale-100 md:scale-100 sm:scale-100' size={35} style={{ cursor: 'pointer' }} />
                                 </Link>
                             </HoverCardTrigger>
                             <HoverCardContent>
@@ -35,11 +35,11 @@ const Appbar = () => {
                             </HoverCardContent>
                         </HoverCard>
                     </li>
-                    <li>
+                    <li className='ml-2 lg:ml-5 md:ml-4 sm:ml-4'>
                         <HoverCard>
                             <HoverCardTrigger>
                                 <Link href="/favorites">
-                                    <MdFavoriteBorder size={35} style={{ cursor: 'pointer' }} />
+                                    <MdFavoriteBorder className='scale-75 lg:scale-100 md:scale-100 sm:scale-100' size={35} style={{ cursor: 'pointer' }} />
                                 </Link>
                             </HoverCardTrigger>
                             <HoverCardContent>

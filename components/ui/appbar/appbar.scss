@@ -6,8 +6,6 @@
     flex-direction: row;
     border-bottom: 1px solid rgb(200, 200, 200);
     >h1{
-        margin-left: 20px;
-        font-size: 2rem;
         font-family: 'Dosis';
         background: linear-gradient(90deg,rgba(2, 204, 197, 1) 0%, rgba(135, 135, 250, 1) 100%);
         background-clip: text;
@@ -21,7 +19,6 @@
         margin-left: 25px;
         padding: 0;
         >li {
-            margin-right: 20px;
             text-decoration: none;
 
             transition: all 200ms ease-in-out;

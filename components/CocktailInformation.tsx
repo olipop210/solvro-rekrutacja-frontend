@@ -25,8 +25,8 @@ const CocktailInformation = ({ cocktail, drawerOpen, setDrawerOpen }: { cocktail
                     <DrawerHeader>
                         <DrawerTitle className={'text-3xl'}>{cocktail.name}</DrawerTitle>
                     </DrawerHeader>
-                    <div className="p-4 pb-0 flex w-full flex-row justify-evenly items-center">
-                        <img src={cocktail.imageUrl!} alt={cocktail.name} className="mb-4 max-h-80 rounded-md" />
+                    <div className="p-4 pb-0 flex w-full flex-col overflow-scroll md:flex-row lg:flex-row sm:flex-row justify-evenly items-center">
+                        <img src={cocktail.imageUrl!} alt={cocktail.name} className="mb-4 lg:max-h-80 md:max-h-70 sm:max-h-60 max-h-50 rounded-md" />
                         <div className={'h-full flex flex-col justify-between ml-6 items-center'}>
                             <header>
                                 <h2 className="mb-2 text-lg font-semibold text-center w-1/2">Ingredients:</h2>

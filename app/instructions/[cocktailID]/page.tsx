@@ -6,7 +6,6 @@ import { Separator } from "@/components/ui/separator";
 import { Cocktail } from "@/lib/types";
 import { use, useEffect, useState } from "react";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
-import { IoTrashOutline } from "react-icons/io5";
 
 import {
     Accordion,
@@ -68,7 +67,7 @@ const CocktailInstructions = ({ params }: { params: Promise<{ cocktailID: string
     return (
         <main className="mx-auto w-full p-4 flex flex-col items-center justify-center">
             <header className="">
-                <h1 className="text-5xl h-16 flex flex-row items-center justify-center w-full gap-5 m-0 p-0  text-center coloredText font-fancy">
+                <h1 className="text-5xl min-h-16 flex flex-row items-center justify-center w-full gap-5 m-0 p-0  text-center coloredText font-fancy">
                     {cocktail.name}
                     {cocktail.alcoholic ? <>
                         <Separator orientation='vertical' />
@@ -81,7 +80,7 @@ const CocktailInstructions = ({ params }: { params: Promise<{ cocktailID: string
                     </> : ''}
                 </h1>
             </header>
-            <div className={'w-7/8 flex flex-row justify-evenly mt-8'}>
+            <div className={'w-7/8 flex lg:flex-row flex-col justify-evenly mt-8'}>
                 <aside className={'flex-3'}>
                     {
                         cocktail.imageUrl ? <img src={cocktail.imageUrl!} alt={cocktail.name} className="mb-4 max-h-96 rounded-md" /> : <Skeleton className="h-[20px] w-[100px] rounded-md" />
@@ -90,16 +89,10 @@ const CocktailInstructions = ({ params }: { params: Promise<{ cocktailID: string
                     <h2 className="text-3xl font-bold mt-5">{cocktail.name}</h2>
                     <p className="mt-2 text-lg">Category: <span className="font-bold"> {cocktail.category ? `${cocktail.category}` : ''} </span></p>
                     <p className="mt-2 text-lg">Glass: <span className="font-bold"> {cocktail.glass ? `${cocktail.glass}` : ''} </span></p>
-                    <p className="mt-2 text-lg">Dodano: <span className="font-bold"> {`${new Date(cocktail.createdAt).toLocaleDateString()}`} </span></p>
+                    <p className="mt-2 text-lg">Added: <span className="font-bold"> {`${new Date(cocktail.createdAt).toLocaleDateString()}`} </span></p>
                     <section className="w-full flex items-center flex-row h-12">
-                        <HoverCard>
-                            <HoverCardTrigger onClick={addToFavorite} className="hover:scale-110 transition-all text-lg  h-full">{<IoTrashOutline className="text-white h-full w-auto font-light text-lg" />}</HoverCardTrigger>
-                            <HoverCardContent side="bottom" className=" p-2 text-center">
-                                {isFavorite ? "Remove from hate list" : "Add to hate list"}
-                            </HoverCardContent>
-                        </HoverCard>
                         <HoverCard >
-                            <HoverCardTrigger onClick={addToFavorite} className="hover:scale-110 font-lg transition-all ml-4 h-full">{isFavorite ? <MdFavorite className="text-red-500 h-full w-auto font-light font-lg" /> : <MdFavoriteBorder className="text-red-500 font-lg stroke-current font-extralight h-full w-auto" />}</HoverCardTrigger>
+                            <HoverCardTrigger onClick={addToFavorite} className="hover:scale-110 font-lg mt-3 transition-all h-full">{isFavorite ? <MdFavorite className="text-red-500 h-full w-auto font-light font-lg" /> : <MdFavoriteBorder className="text-red-500 font-lg stroke-current font-extralight h-full w-auto" />}</HoverCardTrigger>
                             <HoverCardContent side="bottom" className=" p-2 text-center">
                                 {isFavorite ? "Remove from favorites" : "Add to favorites"}
                             </HoverCardContent>

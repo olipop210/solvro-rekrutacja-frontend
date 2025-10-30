@@ -6,33 +6,15 @@ import { Cocktail } from '@/lib/types';
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-    Sheet,
-    SheetClose,
-    SheetContent,
-    SheetDescription,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet"
-
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
-
-
-import { ButtonGroup, ButtonGroupSeparator } from '@/components/ui/button-group';
+import { Sheet, SheetTrigger, } from "@/components/ui/sheet"
 import { toast } from 'sonner';
 import MyPagination from '@/components/ui/Pagination/MyPagination';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import CocktailInformation from './CocktailInformation';
+import CocktailInformation from '../../components/CocktailInformation';
 import { defaultCocktail } from '@/components/CocktailPlaceholder';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
+import Filters from './filters';
 
 const Browse = () => {
 
@@ -46,15 +28,9 @@ const Browse = () => {
 
     const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
-    const [availableCategories, setAvailableCategories] = useState<string[]>([]);
-
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-    const [availableGlasses, setAvailableGlasses] = useState<string[]>([]);
-
     const [selectedGlasses, setSelectedGlasses] = useState<string[]>([]);
-
-    const [availableIngredients, setAvailableIngredients] = useState<string[]>([]);
 
     const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 
@@ -70,9 +46,7 @@ const Browse = () => {
 
     const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false);
 
-    const onlyFavoritesChanged = () => {
-        setOnlyFavorites(!onlyFavorites);
-    }
+    const [favorites, setFavorites] = useState<number[]>([]);
 
     const setPage = (number: number) => {
         setPageNumber(number);
@@ -83,7 +57,8 @@ const Browse = () => {
     useEffect(() => {
         document.title = "Przeglądaj koktajle - Solvro Cocktails";
         loadCocktails();
-        loadFilters();
+
+        loadFavorites();
     }, []);
 
     useEffect(() => {
@@ -143,31 +118,13 @@ const Browse = () => {
         }
     }
 
-    const loadFilters = async () => {
-        loadCategories();
-        loadGlasses();
-        loadIngredients();
-    }
 
-    const loadCategories = async () => {
-        const data = await fetch('https://cocktails.solvro.pl/api/v1/cocktails/categories')
-        const json = await data.json();
-        console.log(json.data);
-        setAvailableCategories(json.data);
-    }
 
-    const loadGlasses = async () => {
-        const data = await fetch('https://cocktails.solvro.pl/api/v1/cocktails/glasses')
-        const json = await data.json();
-        console.log(json.data);
-        setAvailableGlasses(json.data);
-    }
 
-    const loadIngredients = async () => {
-        const data = await fetch('https://cocktails.solvro.pl/api/v1/ingredients/types')
-        const json = await data.json();
-        console.log(json.data);
-        setAvailableIngredients(json.data);
+
+    const loadFavorites = () => {
+        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]') as number[];
+        setFavorites(storedFavorites);
     }
 
     const categoryChanged = (category: string) => {
@@ -217,28 +174,42 @@ const Browse = () => {
         }
     }
 
+    const addToFavorite = async (id: number) => {
+
+        let newFavorities = favorites;
+
+        if (newFavorities.includes(id)) {
+            newFavorities = newFavorities.filter(favId => favId !== id);
+        } else {
+            newFavorities.push(id);
+        }
+
+        localStorage.setItem('favorites', JSON.stringify(newFavorities));
+        setFavorites(newFavorities);
+    }
+
     return (
         <main className="browse-page">
             <Appbar />
             <article>
                 <Sheet>
                     <header>
-                        <h1>Przeglądaj koktajle</h1>
+                        <h1 className=' ml-2 lg:ml-5 text-3xl md:text-4xl leading-12 lg:text-5xl '>Browse Cocktails</h1>
                         <SheetTrigger asChild>
-                            <Button size={'lg'} variant={'outline'}>Filtry</Button>
+                            <Button size={'lg'} variant={'outline'}>Filters</Button>
                         </SheetTrigger>
                     </header>
                     <div className="flex w-full max-w-sm items-center gap-2">
-                        <Input value={searchTerm} placeholder='Wyszukaj koktajl...' onChange={searchUpdated} />
+                        <Input value={searchTerm} placeholder='Search cocktail...' onChange={searchUpdated} />
                         <Select onValueChange={(value) => sortingUpdated(value)} defaultValue={sortOrder}>
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Sortowanie" />
+                                <SelectValue placeholder="Sorting" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="+name">Od A do Z</SelectItem>
-                                <SelectItem value="-name">Od Z do A</SelectItem>
-                                <SelectItem value="+updatedAt">Od najnowszych</SelectItem>
-                                <SelectItem value="-updatedAt">Od najstarszych</SelectItem>
+                                <SelectItem value="+name">A to Z</SelectItem>
+                                <SelectItem value="-name">Z to A</SelectItem>
+                                <SelectItem value="+updatedAt">Newest</SelectItem>
+                                <SelectItem value="-updatedAt">Oldest</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -254,108 +225,31 @@ const Browse = () => {
                                 }} className='cocktail-card'>
 
                                     <img src={cocktail.imageUrl!} alt={cocktail.name} />
-                                    <h3>{cocktail.name}</h3>
+                                    <HoverCard >
+                                        <HoverCardTrigger onClick={() => addToFavorite(cocktail.id)} className=" absolute font-lg mt-3 transition-all ">{favorites.includes(cocktail.id) ?
+                                            <MdFavorite className="text-red-500 hover:scale-110 w-10 h-10 font-light font-lg relative -top-35 left-1 lg:-top-69 md:-top-35 sm:-top-35" /> :
+                                            <MdFavoriteBorder className="text-red-500 hover:scale-110 font-lg w-10 h-10 stroke-current font-extralight relative -top-35 left-1 lg:-top-69 md:-top-35 sm:-top-35" />}</HoverCardTrigger>
+                                        <HoverCardContent side="bottom" className=" p-2 text-center">
+                                            {favorites.includes(cocktail.id) ? "Remove from favorites" : "Add to favorites"}
+                                        </HoverCardContent>
+                                    </HoverCard>
+                                    <h3 >{cocktail.name}</h3>
                                 </li>
                             ))}
                         </ul>
-                        <aside>
-                            <h2>Filtry</h2>
-                        </aside>
                     </section>
                     <footer>
                         {
                             totalPages > 1 ? <MyPagination setPage={setPage} page={page} totalPages={totalPages} /> : null
                         }
-
                     </footer>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle>Filtry</SheetTitle>
-                            <SheetDescription>
-                                Tutaj możesz ustawić filtry wyszukiwania koktajli.
-                            </SheetDescription>
-                        </SheetHeader>
-                        <div className="grid flex-1 auto-rows-min overflow-scroll gap-6 px-4">
-                            <div className="grid gap-3">
-                                <Label htmlFor="sheet-demo-name">Liczba wyników na stronę</Label>
-                                <ButtonGroup >
-                                    <Button disabled={perPage === 15} onClick={() => setPerPage(15)}>15</Button>
-                                    <ButtonGroupSeparator />
-                                    <Button disabled={perPage === 30} onClick={() => setPerPage(30)}>30</Button>
-                                    <ButtonGroupSeparator />
-                                    <Button disabled={perPage === 45} onClick={() => setPerPage(45)}>45</Button>
-                                    <ButtonGroupSeparator />
-                                    <Button disabled={perPage === 60} onClick={() => setPerPage(60)}>60</Button>
-                                </ButtonGroup>
-                            </div>
-                            <div className="grid gap-3">
-                                <Accordion
-                                    type="single"
-                                    collapsible
-                                    className="w-full"
-                                >
-                                    <AccordionItem value="item-1">
-                                        <AccordionTrigger>Typ koktajlu <span className={'text-neutral-500'}>{selectedCategories.length > 0 ? `wybrano ${selectedCategories.length}` : null} </span></AccordionTrigger>
-                                        <AccordionContent className="flex flex-col gap-4 text-balance">
-                                            {availableCategories.map((category, index) => (
-                                                <div key={index} className='flex items-center'>
-                                                    <Checkbox defaultChecked={selectedCategories.includes(category)} onCheckedChange={() => categoryChanged(category)} id={`category-${index}`} name="category" value={category} />
-                                                    <Label htmlFor={`category-${index}`} className='ml-2'>{category}</Label>
-                                                </div>
-                                            ))}
-                                        </AccordionContent>
-                                    </AccordionItem>
-
-                                </Accordion>
-                                <Accordion type="single"
-                                    collapsible
-                                    className="w-full"
-                                >
-                                    <AccordionItem value="item-1">
-                                        <AccordionTrigger>Typ szkła <span className={'text-neutral-500'}>{selectedGlasses.length > 0 ? `wybrano ${selectedGlasses.length}` : null} </span></AccordionTrigger>
-                                        <AccordionContent className="flex flex-col gap-4 text-balance">
-                                            {availableGlasses.map((glass, index) => (
-                                                <div key={index} className='flex items-center'>
-                                                    <Checkbox defaultChecked={selectedGlasses.includes(glass)} onCheckedChange={() => glassChanged(glass)} id={`glass-${index}`} name="glass" value={glass} />
-                                                    <Label htmlFor={`glass-${index}`} className='ml-2'>{glass}</Label>
-                                                </div>
-                                            ))}
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                                <Accordion type="single"
-                                    collapsible
-                                    className="w-full"
-                                >
-                                    <AccordionItem value="item-1">
-                                        <AccordionTrigger>Posiadane składniki <span className={'text-neutral-500'}>{selectedIngredients.length > 0 ? `wybrano ${selectedIngredients.length}` : null} </span></AccordionTrigger>
-                                        <AccordionContent className="flex flex-col gap-4 text-balance">
-                                            {availableIngredients.map((ingredient, index) => (
-                                                <div key={index} className='flex items-center'>
-                                                    <Checkbox defaultChecked={selectedIngredients.includes(ingredient)} onCheckedChange={() => ingredientChanged(ingredient)} id={`ingredient-${index}`} name="ingredient" value={ingredient} />
-                                                    <Label htmlFor={`ingredient-${index}`} className='ml-2'>{ingredient}</Label>
-                                                </div>
-                                            ))}
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                                <section className='filterSection'>
-                                    <Checkbox defaultChecked={softDrinksOnly} onCheckedChange={softDrinksChanged} id={`soft-drinks-only`} name="soft-drinks-only" value="soft-drinks-only" />
-                                    <Label className='ml-2'>Soft drinks only</Label>
-                                </section>
-                                <section className='filterSection'>
-                                    <Checkbox defaultChecked={onlyFavorites} onCheckedChange={onlyFavoritesChanged} id={`only-favorites`} name="only-favorites" value="only-favorites" />
-                                    <Label className='ml-2'>Only favorites</Label>
-                                </section>
-                            </div>
-                        </div>
-                        <SheetFooter>
-                            <Button onClick={() => loadCocktails()} >Filtruj</Button>
-                            <SheetClose asChild>
-                                <Button variant="outline">Zamknij</Button>
-                            </SheetClose>
-                        </SheetFooter>
-                    </SheetContent>
+                    <Filters perPage={perPage} setPerPage={setPerPage} selectedCategories={selectedCategories}
+                        selectedGlasses={selectedGlasses} selectedIngredients={selectedIngredients} softDrinksOnly={softDrinksOnly} onlyFavorites={onlyFavorites}
+                        selectedGlassChanged={glassChanged} selectedIngredientChanged={ingredientChanged} selectedCategoryChanged={categoryChanged} loadCocktails={loadCocktails}
+                        softDrinksChanged={softDrinksChanged} onlyFavoritesChanged={() => {
+                            setOnlyFavorites(!onlyFavorites);
+                            loadCocktails();
+                        }} />
                 </Sheet>
                 <CocktailInformation cocktail={selectedCocktail!} drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
             </article>
