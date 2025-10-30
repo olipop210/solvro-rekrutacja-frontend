@@ -55,10 +55,9 @@ const Browse = () => {
     }
 
     useEffect(() => {
-        document.title = "Przeglądaj koktajle - Solvro Cocktails";
-        loadCocktails();
-
+        document.title = "Browse Cocktails - Solvro Cocktails";
         loadFavorites();
+        loadCocktails();
     }, []);
 
     useEffect(() => {
@@ -117,10 +116,6 @@ const Browse = () => {
             }
         }
     }
-
-
-
-
 
     const loadFavorites = () => {
         const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]') as number[];

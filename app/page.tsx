@@ -1,10 +1,15 @@
-import { Separator } from '@radix-ui/react-separator';
+'use client';
 import './page.scss';
 import { Button } from '@/components/ui/button';
 import FancyBackground from '@/components/FancyBackground';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function Home() {
+
+  useEffect(() => {
+    document.title = "Solvro Cocktails - Home";
+  }, [])
 
   return (
     <>
@@ -23,7 +28,7 @@ export default function Home() {
             <Link href="/browse">
               <Button size={'lg'} className={'scale-90 lg:scale-125 sm:scale-100 hover:cursor-pointer'} variant={'secondary'}>Browse Cocktails</Button>
             </Link>
-            <a href="">
+            <a href="https://github.com/olipop210/solvro-rekrutacja-frontend" target="_blank" rel="noopener noreferrer">
               <Button size={'lg'} className={' scale-90 lg:scale-125 sm:scale-100 lg:ml-20 hover:cursor-pointer'} variant={'outline'}>Explore Repository</Button>
             </a>
           </section>

@@ -18,6 +18,7 @@ const Favorites = () => {
     const [selectedCocktail, setSelectedCocktail] = useState<Cocktail>(defaultCocktail);
 
     useEffect(() => {
+        document.title = "Favorite Cocktails - Solvro Cocktails";
         const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]') as number[];
         if (storedFavorites.length !== favoriteIDs.length) {
             setFavoriteIDs(storedFavorites);
