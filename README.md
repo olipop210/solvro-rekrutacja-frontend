@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Description
+
+Rozwiązanie zadania rekrutacyjnego do KN Solvro dla sekcji frontend. Oparta o nextJS i biliotekę ui.shadcn.com. Stylowanie początkowo pisałem w scss (dlatego np. strona początkowa jest w nim napisana), jednak potem uznałem że moje unikanie tailwinda jest bezcelowe i spróbowałem swoich sił z nim. Filtrowanie i co tam chcieliscie to działa, responsywność z grubsza też, choć jest jedno miejsce którego nie zdążę już poprawić. Mam nadzieję że da się na to patrzeć XD
+
+## Link do deploya
+
+Aplikacja jest dostępna pod [tym](https://solvro-frontend-edpuycvv7-olipops-projects.vercel.app/browse) linkiem
 
 ## Getting Started
 
@@ -28,9 +34,3 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
