@@ -212,7 +212,7 @@ const Browse = () => {
                         totalPages > 1 ? <MyPagination setPage={setPage} page={page} totalPages={totalPages} /> : null
                     }
                     <section className='horizontal-container'>
-                        <ul className='cocktails-grid'>
+                        <ul className='cocktails-grid w-80 sm:w-9/10 md:w-9/10 lg:w-8/10'>
                             {cocktails.map(cocktail => (
                                 <li key={cocktail.id} onClick={() => {
                                     setDrawerOpen(true)
