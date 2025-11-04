@@ -4,7 +4,7 @@ Rozwiązanie zadania rekrutacyjnego do KN Solvro dla sekcji frontend. Oparta o n
 
 ## Link do deploya
 
-Aplikacja jest dostępna pod [tym](https://solvro-frontend-edpuycvv7-olipops-projects.vercel.app) linkiem
+Aplikacja jest dostępna pod [tym](https://solvro-frontend-owh62crvp-olipops-projects.vercel.app) linkiem
 
 ## Getting Started
 
