@@ -23,7 +23,9 @@ const Favorites = () => {
     }, [])
 
     useEffect(() => {
-        loadData()
+        if (favoriteIDs.length !== 0) {
+            loadData()
+        }
     }, [favoriteIDs])
 
     const loadData = async () => {
