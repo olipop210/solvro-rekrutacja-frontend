@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import '../browse/browse.scss'
 import { defaultCocktail } from "@/components/CocktailPlaceholder";
 import CocktailInformation from "../../components/CocktailInformation";
+import useFavorites from "@/components/hooks/useFavorites";
 
 const Favorites = () => {
 
-    const [favoriteIDs, setFavoriteIDs] = useState<number[]>([])
+    const [favorites, setFavorites] = useState<Cocktail[]>([]);
 
-    const [favorites, setFavorites] = useState<Cocktail[]>([])
+    const { favorites: favoriteIDs } = useFavorites();
 
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
@@ -19,10 +20,6 @@ const Favorites = () => {
 
     useEffect(() => {
         document.title = "Favorite Cocktails - Solvro Cocktails";
-        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]') as number[];
-        if (storedFavorites.length !== favoriteIDs.length) {
-            setFavoriteIDs(storedFavorites);
-        }
     }, [])
 
     useEffect(() => {
@@ -31,11 +28,8 @@ const Favorites = () => {
 
     const loadData = async () => {
         let queries = '';
-        favoriteIDs.forEach((id, index) => {
-
+        favoriteIDs.forEach((id) => {
             queries += `&id[]=${id}`;
-
-
         });
         const data = await fetch(`https://cocktails.solvro.pl/api/v1/cocktails?ingredients=true${queries}`);
         const json = await data.json();
@@ -52,7 +46,7 @@ const Favorites = () => {
                 </header>
                 <section>
                     {favorites.length > 0 ? (
-                        <ul>
+                        <ul className="cocktails-grid w-80 sm:w-9/10 md:w-9/10 lg:w-8/10">
                             {favorites.map((cocktail: Cocktail) => (
                                 <li key={cocktail.id} onClick={() => {
                                     setDrawerOpen(true)

@@ -12,8 +12,6 @@ import MyPagination from '@/components/ui/Pagination/MyPagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CocktailInformation from '../../components/CocktailInformation';
 import { defaultCocktail } from '@/components/CocktailPlaceholder';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import Filters from './filters';
 
 const Browse = () => {
@@ -46,17 +44,14 @@ const Browse = () => {
 
     const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false);
 
-    const [favorites, setFavorites] = useState<number[]>([]);
 
     const setPage = (number: number) => {
         setPageNumber(number);
-        loadCocktails();
         window.scrollTo(0, 0);
     }
 
     useEffect(() => {
         document.title = "Browse Cocktails - Solvro Cocktails";
-        loadFavorites();
         loadCocktails();
     }, []);
 
@@ -117,11 +112,6 @@ const Browse = () => {
         }
     }
 
-    const loadFavorites = () => {
-        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]') as number[];
-        setFavorites(storedFavorites);
-    }
-
     const categoryChanged = (category: string) => {
         console.log(`Category changed: ${category}`);
         if (selectedCategories.includes(category)) {
@@ -169,20 +159,6 @@ const Browse = () => {
         }
     }
 
-    const addToFavorite = async (id: number) => {
-
-        let newFavorities = favorites;
-
-        if (newFavorities.includes(id)) {
-            newFavorities = newFavorities.filter(favId => favId !== id);
-        } else {
-            newFavorities.push(id);
-        }
-
-        localStorage.setItem('favorites', JSON.stringify(newFavorities));
-        setFavorites(newFavorities);
-    }
-
     return (
         <main className="browse-page">
             <Appbar />
@@ -220,14 +196,6 @@ const Browse = () => {
                                 }} className='cocktail-card'>
 
                                     <img src={cocktail.imageUrl!} alt={cocktail.name} />
-                                    <HoverCard >
-                                        <HoverCardTrigger onClick={() => addToFavorite(cocktail.id)} className=" absolute font-lg mt-3 transition-all ">{favorites.includes(cocktail.id) ?
-                                            <MdFavorite className="text-red-500 hover:scale-110 w-10 h-10 font-light font-lg relative -top-35 left-1 lg:-top-69 md:-top-35 sm:-top-35" /> :
-                                            <MdFavoriteBorder className="text-red-500 hover:scale-110 font-lg w-10 h-10 stroke-current font-extralight relative -top-35 left-1 lg:-top-69 md:-top-35 sm:-top-35" />}</HoverCardTrigger>
-                                        <HoverCardContent side="bottom" className=" p-2 text-center">
-                                            {favorites.includes(cocktail.id) ? "Remove from favorites" : "Add to favorites"}
-                                        </HoverCardContent>
-                                    </HoverCard>
                                     <h3 >{cocktail.name}</h3>
                                 </li>
                             ))}
